@@ -1,7 +1,21 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
+#include "time.h"
 
 #include "secrets.h"
+
+const char* ntpServer = "pool.ntp.org";
+const long  gmtOffset_sec = 3600;
+const int   daylightOffset_sec = 3600;
+
+void printLocalTime() {
+  struct tm timeinfo;
+  if(!getLocalTime(&timeinfo)){
+    Serial.println("Failed to obtain time");
+    return;
+  }
+  Serial.println(&timeinfo, "%A, %B %d %Y %H:%M:%S");
+}
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -94,6 +108,9 @@ void setup_wifi() {
   Serial.println("WiFi connected");
   Serial.println("IP address: ");
   Serial.println(WiFi.localIP());
+  Serial.println("getting current time");
+  configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
+  printLocalTime();
   
   xTaskCreatePinnedToCore(
       NetTaskCode, /* Function to implement the task */
