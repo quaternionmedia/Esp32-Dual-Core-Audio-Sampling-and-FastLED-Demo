@@ -14,18 +14,18 @@
 // Garrick Hogrebe August 2021
 
 
-#define AUDIO_IN_PIN    14             // Audio signal pin
-#define LED_PIN         15             // LED data strip pin
+#define AUDIO_IN_PIN    13             // Audio signal pin
+#define LED_PIN         14             // LED data strip pin
 
 #define SAMPLES         1024          // Must be a power of 2
-#define SAMPLING_FREQ   40000         // Hz, must be 40000 or less due to ADC conversion time. Determines maximum frequency that can be analysed by the FFT Fmax=sampleF/2.
+#define SAMPLING_FREQ   20000         // Hz, must be 40000 or less due to ADC conversion time. Determines maximum frequency that can be analysed by the FFT Fmax=sampleF/2.
 #define COLOR_ORDER     GRB           // If colours look wrong, play with this
 #define CHIPSET         WS2812B       // LED strip type
 #define NUM_BANDS       16            // To change this, you will need to change the bunch of if statements describing the mapping from bins to bands
 
 #define NOISE           4000           // Used as a crude noise filter, values below this are ignored. Try lowering this if you dont pick up audio data.
 
-#define NUM_LEDS       167           // Total number of LEDs
+#define NUM_LEDS       300           // Total number of LEDs
 #define BRIGHTNESS      100           //Brightness
 #define FRAMES_PER_SECOND 120         //Used to insert delay
 
@@ -157,11 +157,11 @@ void loop() {//Loop is defualt to core 1 on esp32
   }
       
   // Cycle the color slowly
-  EVERY_N_MILLISECONDS(800) {
+  EVERY_N_MILLISECONDS(120) {
     colorTimer++;
   }
 
 
   FastLED.show();
-  FastLED.delay(1000/FRAMES_PER_SECOND);
+  // FastLED.delay(1000/FRAMES_PER_SECOND);
 }
