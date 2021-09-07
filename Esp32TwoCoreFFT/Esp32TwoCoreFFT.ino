@@ -1,14 +1,13 @@
-#define DEBUG true
+#define DEBUG false
 #include <FastLED.h>
 #include <arduinoFFT.h>
-#include "secrets.h"
-#include <WiFi.h>
+#include "net.h"
 
 #define AUDIO_IN_PIN    13             // Audio signal pin
 #define LED_PIN         14             // LED data strip pin
 
 #define SAMPLES         512          // Must be a power of 2
-#define SAMPLING_FREQ   20000         // Hz, must be 40000 or less due to ADC conversion time. Determines maximum frequency that can be analysed by the FFT Fmax=sampleF/2.
+#define SAMPLING_FREQ   40000         // Hz, must be 40000 or less due to ADC conversion time. Determines maximum frequency that can be analysed by the FFT Fmax=sampleF/2.
 #define COLOR_ORDER     GRB           // If colours look wrong, play with this
 #define CHIPSET         WS2812B       // LED strip type
 #define NUM_BANDS       16            // To change this, you will need to change the bunch of if statements describing the mapping from bins to bands
@@ -44,13 +43,16 @@ void setup() {
   FastLED.addLeds<CHIPSET, LED_PIN, COLOR_ORDER>(leds, NUM_LEDS).setCorrection(TypicalSMD5050);
   FastLED.setBrightness(BRIGHTNESS);
   FastLED.clear();
-  
+  setup_wifi();
+
   //Calculate Sampling Period
   sampling_period_us = round(1000000 * (1.0 / SAMPLING_FREQ));
   bandLock = xSemaphoreCreateMutex();
 
-  //Begin our audio sampling task on core 0
-  xTaskCreatePinnedToCore(samplingLoop, "Sampling Task", 10000, NULL, 1, &samplingTask, 1);
+
+  //Begin our audio sampling task on core 1
+//  xTaskCreatePinnedToCore(samplingLoop, "Sampling Task", 10000, NULL, 1, &samplingTask, 1);
+  
 }
 
 
