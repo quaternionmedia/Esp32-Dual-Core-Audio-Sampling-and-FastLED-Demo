@@ -3,7 +3,7 @@
 #include <arduinoFFT.h>
 #include "net.h"
 
-#define AUDIO_IN_PIN    13             // Audio signal pin
+#define AUDIO_IN_PIN    36             // Audio signal pin
 #define LED_PIN         14             // LED data strip pin
 
 #define SAMPLES         512          // Must be a power of 2
@@ -51,7 +51,7 @@ void setup() {
 
 
   //Begin our audio sampling task on core 1
-//  xTaskCreatePinnedToCore(samplingLoop, "Sampling Task", 10000, NULL, 1, &samplingTask, 1);
+  xTaskCreatePinnedToCore(samplingLoop, "Sampling Task", 10000, NULL, 1, &samplingTask, 1);
   
 }
 
