@@ -31,7 +31,7 @@ void callback(char* topic, byte* message, unsigned int length) {
     Serial.print((char)message[i]);
     messageTemp += (char)message[i];
   }
-  Serial.println();
+  Serial.println(messageTemp);
 // TODO action messageTemp
 //  if (String(topic) == "leds/blueangle") {
 //    blueangle = messageTemp.toInt();
@@ -44,30 +44,10 @@ void reconnect() {
   while (!client.connected()) {
     Serial.print("Attempting MQTT connection...");
     // Attempt to connect
-    if (client.connect("ESP32Client")) {
+    if (client.connect(CLIENT_NAME)) {
       Serial.println("connected");
       // Subscribe
-      client.subscribe("leds/blueangle");
-      client.subscribe("leds/bluelow");
-      client.subscribe("leds/bluehigh");
-      client.subscribe("leds/bluetime");
-      client.subscribe("leds/blueshift");
-      
-      client.subscribe("leds/greenangle");
-      client.subscribe("leds/greenlow");
-      client.subscribe("leds/greenhigh");
-      client.subscribe("leds/greentime");
-      client.subscribe("leds/greenshift");
-      
-      client.subscribe("leds/redangle");
-      client.subscribe("leds/redlow");
-      client.subscribe("leds/redhigh");
-      client.subscribe("leds/redtime");
-      client.subscribe("leds/redshift");
-      
-      client.subscribe("leds/fadespeed");
       client.subscribe("leds/loopspeed");
-      client.subscribe("leds/jazzhands");
     } else {
       Serial.print("failed, rc=");
       Serial.print(client.state());
@@ -90,7 +70,6 @@ void NetTaskCode( void * pvParameters ) {
 
 
 void setup_wifi() {
-  delay(10);
   // We start by connecting to a WiFi network
   Serial.println();
   Serial.print("Connecting to ");
@@ -111,6 +90,9 @@ void setup_wifi() {
   Serial.println("getting current time");
   configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
   printLocalTime();
+
+  client.setServer(mqtt_server, 1883);
+  client.setCallback(callback);
   
   xTaskCreatePinnedToCore(
       NetTaskCode, /* Function to implement the task */

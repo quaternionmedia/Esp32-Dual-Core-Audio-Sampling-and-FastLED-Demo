@@ -1,4 +1,6 @@
 #define DEBUG false
+#define CLIENT_NAME "IRA-FFT"
+
 #include <FastLED.h>
 #include <arduinoFFT.h>
 #include "net.h"
