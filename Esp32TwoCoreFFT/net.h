@@ -65,6 +65,7 @@ void NetTaskCode( void * pvParameters ) {
       reconnect();
     }
     client.loop();
+    delay(1);
   }
 }
 
