@@ -15,6 +15,7 @@
 #define NUM_BANDS       16            // To change this, you will need to change the bunch of if statements describing the mapping from bins to bands
 
 #define NOISE           4000           // Used as a crude noise filter, values below this are ignored. Try lowering this if you dont pick up audio data.
+#define SCALE           4000
 
 #define NUM_LEDS       300           // Total number of LEDs
 #define BRIGHTNESS      100           //Brightness
@@ -137,12 +138,10 @@ void loop() {//Loop is defualt to core 1 on esp32
   xSemaphoreGive(bandLock);
 
   //Adjust this constant to change how far out the bar goes
-  height = total / 4000;
+  height = total / SCALE;
 
   //Make sure the bar does not go outside our LED array
-  if (height > (NUM_LEDS - 1) / 2) {
-    height = (NUM_LEDS - 1) / 2;
-  }
+  height = min(height, (NUM_LEDS - 1) / 2);
 
   //Weighted Average to smooth out how the bar grows and shrinks
   height = (prev * 2 + 3 * height) / 5;
